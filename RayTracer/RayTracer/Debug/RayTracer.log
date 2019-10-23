@@ -1,0 +1,6 @@
+﻿  RayTracer.cpp
+C:\Users\Lucas\Documents\CompVis\RayTracer\RayTracer\RayTracer.cpp(48,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Lucas\Documents\CompVis\RayTracer\RayTracer\RayTracer.cpp(74,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Lucas\Documents\CompVis\RayTracer\RayTracer\RayTracer.cpp(75,11): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\Lucas\Documents\CompVis\RayTracer\RayTracer\RayTracer.cpp(77,11): warning C4305: 'argument': truncation from 'double' to 'const float'
+  RayTracer.vcxproj -> C:\Users\Lucas\Documents\CompVis\RayTracer\Debug\RayTracer.exe
