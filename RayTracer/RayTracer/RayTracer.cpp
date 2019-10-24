@@ -17,17 +17,19 @@ public:
 	v3d center;
 	float radius;
 	Sphere(v3d center, float radius) : center(center), radius(radius) {}
-	bool intersect(const v3d& origin, const v3d& ray){//, v3d& intersection) {
+	bool intersect(const v3d& origin, const v3d& ray, v3d& intersection, v3d& normal) {
 		v3d v = origin - center;
 		const float b = 2 * v.dot(ray);
 		const float c = v.dot(v) - radius*radius;
 		const float delta = b*b - 4 * c;
 		if (delta < 0) return false;
 
-		//const float t1 = (-b - sqrt(delta)) / 2;
-		//const float t2 = (-b - sqrt(delta)) / 2;
+		const float t1 = (-b - sqrt(delta)) / 2;
+		const float t2 = (-b - sqrt(delta)) / 2;
 
-		//intersection = (t1 < t2) ? (center + t1*ray) : (center + t2*ray);
+		intersection = (t1 < t2) ? (center + t1*ray) : (center + t2*ray);
+		normal = intersection - center;
+		normal.normalize();
 
 		return true;
 	}
@@ -65,8 +67,19 @@ public:
 
 	olc::Pixel inicialTrace(int32_t x, int32_t y) {
 		v3d rayDirection = cameraDirection + (cameraParallel * (x * unitsPerPixel)) + (cameraUp * (y * unitsPerPixel));
-		if (esferas[0].intersect(cameraOrigin, rayDirection.normalized())) return olc::Pixel(0, 255, 255);
-		else return olc::Pixel(0,0,0);
+		rayDirection.normalize();
+
+		v3d intersection = v3d(0,0,0);
+		v3d normal = v3d(0,0,0);
+
+		if (esferas[0].intersect(cameraOrigin, rayDirection, intersection, normal)) {
+			return background(-1 * rayDirection);
+		}
+		else return background(rayDirection);
+	}
+
+	olc::Pixel background(v3d direction) {
+		return olc::Pixel(125 + 125*direction.x, 125 + 125*direction.y, 125 + 125*direction.z);
 	}
 };
 
