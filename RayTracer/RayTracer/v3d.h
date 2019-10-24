@@ -38,23 +38,32 @@ struct v3d {
 		return *this;
 	}
 	//Methods
-	float dot(const v3d& vec) const {
+	inline float dot(const v3d& vec) const {
 		return x * vec.x + y * vec.y + z * vec.z;
 	}
-	float norm() {
+	inline v3d cross(const v3d& vec) const {
+		return v3d(y*vec.z - z*vec.y, z*vec.x - x*vec.z, x*vec.y - y*vec.x);
+	}
+	inline float norm() {
 		return sqrt(dot(*this));
 	}
-	v3d normalized() {
+	inline v3d normalized() {
 		return *this / norm();
 	}
-	void normalize() {
+	inline void normalize() {
 		*this /= norm();
 	}
 };
 
-v3d operator *(const float& numb, const v3d& vec) {
+inline v3d operator *(const float& numb, const v3d& vec) {
 	return vec * numb;
 }
 std::ostream& operator<<(std::ostream& os, v3d vec) {
 	return os << vec.x << ", " << vec.y << ", " << vec.z;
+}
+inline float dot(const v3d& vec1, const v3d& vec2) {
+	return vec1.dot(vec2);
+}
+inline v3d cross(const v3d& vec1, const v3d& vec2) {
+	return vec1.cross(vec2);
 }

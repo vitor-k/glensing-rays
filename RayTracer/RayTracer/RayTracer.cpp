@@ -22,7 +22,6 @@ public:
 		const float b = 2 * v.dot(ray);
 		const float c = v.dot(v) - radius*radius;
 		const float delta = b*b - 4 * c;
-
 		if (delta < 0) return false;
 
 		//const float t1 = (-b - sqrt(delta)) / 2;
@@ -38,16 +37,19 @@ public:
 class RayTracerEngine : public olc::PixelGameEngine {
 public:
 	RayTracerEngine() { sAppName = "Ray Caster"; }
-
+public:
 	v3d cameraOrigin = v3d(0,0,0);
-	v3d cameraPosition = v3d(0,0,1);
+	v3d cameraDirection = v3d(1,0,0); //X
+	v3d cameraParallel = v3d(0,0,0);  //Y
+	v3d cameraUp = v3d(0,0,1);        //Z
 
-	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(0,0,3), 1)});
+	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(3,0,0), 1)});
 
 	//float FOV = 90.;
-	float unitsPerPixel = 0.01;
+	float unitsPerPixel = 0.004;
 
 	bool OnUserCreate() override {
+		cameraParallel = cameraUp.cross(cameraDirection);
 		return true;
 	}
 
@@ -56,11 +58,15 @@ public:
 		int32_t height = ScreenHeight();
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++){
-				v3d rayOrigin = cameraPosition + v3d((x - width/2) * unitsPerPixel , (y - height / 2) * unitsPerPixel, 0); //TODO melhorar
-				if (esferas[0].intersect(rayOrigin, cameraPosition)) Draw(x, y, olc::Pixel(255, 255, 255));
-				else Draw(x, y, olc::Pixel(50, 50, 50));
+				Draw(x, y, inicialTrace(x - width/2, y - height / 2));
 			}
 		return true;
+	}
+
+	olc::Pixel inicialTrace(int32_t x, int32_t y) {
+		v3d rayDirection = cameraDirection + (cameraParallel * (x * unitsPerPixel)) + (cameraUp * (y * unitsPerPixel));
+		if (esferas[0].intersect(cameraOrigin, rayDirection.normalized())) return olc::Pixel(0, 255, 255);
+		else return olc::Pixel(0,0,0);
 	}
 };
 
