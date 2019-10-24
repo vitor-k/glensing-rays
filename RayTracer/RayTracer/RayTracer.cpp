@@ -40,9 +40,9 @@ public:
 	RayTracerEngine() { sAppName = "Ray Caster"; }
 
 	v3d cameraOrigin = v3d(0,0,0);
-	v3d cameraPosition = v3d(1,0,0);
+	v3d cameraPosition = v3d(0,0,1);
 
-	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(3,0,0), 1)});
+	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(0,0,3), 1)});
 
 	//float FOV = 90.;
 	float unitsPerPixel = 0.01;
@@ -58,7 +58,7 @@ public:
 			for (int y = 0; y < height; y++){
 				v3d rayOrigin = cameraPosition + v3d((x - width/2) * unitsPerPixel , (y - height / 2) * unitsPerPixel, 0); //TODO melhorar
 				if (esferas[0].intersect(rayOrigin, cameraPosition)) Draw(x, y, olc::Pixel(255, 255, 255));
-				else Draw(x, y, olc::Pixel(0, 0, 0));
+				else Draw(x, y, olc::Pixel(50, 50, 50));
 			}
 		return true;
 	}
