@@ -24,12 +24,13 @@ public:
 		const float c = v.norm2() - radius*radius;
 		const float delta = b*b - 4 * c;
 		if (delta < 0) return false;
-		const float sqdelta = std::sqrtf(delta);
 
-		const float t1 = (-b + sqdelta) / 2;
-		const float t2 = (-b - sqdelta) / 2;
+		const float t1 = (-b - sqrt(delta)) / 2;
 
-		intersection = (t1 < t2) ? (center + t1*ray) : (center + t2*ray);
+		if (t1<0) return false;
+
+		intersection = origin + t1*ray;
+
 		normal = intersection - center;
 		normal.normalize();
 
@@ -52,7 +53,7 @@ public:
 	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(3,0,0), 1)});
 
 	//float FOV = 90.;
-	const float unitsPerPixel = 0.004;
+	const float unitsPerPixel = 0.001;
 
 	bool OnUserCreate() override {
 		cameraParallel = cameraUp.cross(cameraDirection);
@@ -70,6 +71,7 @@ public:
 	}
 
 	olc::Pixel inicialTrace(int32_t x, int32_t y) {
+		//std::cout << fElapsedTime << std::endl;
 		v3d rayDirection = cameraDirection + (cameraParallel * (x * unitsPerPixel)) + (cameraUp * (y * unitsPerPixel));
 		rayDirection.normalize();
 
@@ -77,7 +79,12 @@ public:
 		v3d normal = v3d(0,0,0);
 
 		if (esferas[0].intersect(cameraOrigin, rayDirection, intersection, normal)) {
-			return background(-1 * rayDirection);
+			float bla = sqrt(abs(rayDirection.dot(normal)));
+			olc::Pixel pix = background((rayDirection - 2 * dot(rayDirection, normal) * normal).normalized());
+			pix.r *= bla;
+			pix.g *= bla;
+			pix.b *= bla;
+			return pix;
 		}
 		else return background(rayDirection);
 	}
@@ -90,15 +97,9 @@ public:
 int main()
 {
 	RayTracerEngine demo;
-	if (demo.Construct(200, 200, 4, 4)) demo.Start();
+	if (demo.Construct(800, 800, 1, 1)) demo.Start();
 	//Sphere bla = Sphere(2.1, 6.8);
 	//std::cout << bla.radius << std::endl;
-	v3d bla = v3d(0.1, 0.3, 0.1);
-	bla * 3.1;
-	bla * 3;
-	3.1 * bla;
-	bla / int(3);
-	std::cout << (3 * bla).norm();
 
 }
 
