@@ -80,7 +80,7 @@ public:
 
 		if (esferas[0].intersect(cameraOrigin, rayDirection, intersection, normal)) {
 			float bla = sqrt(abs(rayDirection.dot(normal)));
-			olc::Pixel pix = background((rayDirection - 2 * dot(rayDirection, normal) * normal).normalized());
+			olc::Pixel pix = background((rayDirection - 2 * rayDirection.dot(normal) * normal).normalized());
 			pix.r *= bla;
 			pix.g *= bla;
 			pix.b *= bla;

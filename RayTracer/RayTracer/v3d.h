@@ -47,8 +47,8 @@ struct v3d {
 	inline float norm() {
 		return std::sqrtf(dot(*this));
 	}
-	inline float norm2() {
-		return dot(*this);
+	constexpr float norm2() {
+		return x*x + y*y + z*z;
 	}
 	inline v3d normalized() {
 		return *this / norm();
