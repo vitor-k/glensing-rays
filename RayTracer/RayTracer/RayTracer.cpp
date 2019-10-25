@@ -18,9 +18,9 @@ public:
 	v3d center;
 	float radius;
 	Sphere(v3d center, float radius) : center(center), radius(radius) {}
-	bool intersect(const v3d& origin, const v3d& ray, v3d& intersection, v3d& normal) const{
+	bool intersect(const v3d& origin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
 		v3d v = origin - center;
-		const float b = 2 * v.dot(ray);
+		const float b = 2 * v.dot(rayDirection);
 		const float c = v.norm2() - radius*radius;
 		const float delta = b*b - 4 * c;
 		if (delta < 0) return false;
@@ -29,7 +29,7 @@ public:
 
 		if (t1<0) return false;
 
-		intersection = origin + t1*ray;
+		intersection = origin + t1*rayDirection;
 
 		normal = intersection - center;
 		normal.normalize();
@@ -41,22 +41,22 @@ public:
 
 class RayTracerEngine : public olc::PixelGameEngine {
 public:
-	RayTracerEngine() : cameraOrigin({ 0,0,0 }), cameraDirection({ 1,0,0 }), cameraUp({ 0,0,1 }) {
-		sAppName = "Ray Caster"; 
+	RayTracerEngine() {
+		sAppName = "Ray Caster";
+		cameraParallel = cameraUp.cross(cameraDirection);
 	}
 public:
-	const v3d cameraOrigin;
-	const v3d cameraDirection;
-	v3d cameraParallel = v3d(0,0,0);  //Y
-	const v3d cameraUp;
+	v3d cameraOrigin = v3d(0,0,0);
+	v3d cameraDirection = v3d(1,0,0); //X
+	v3d cameraParallel = v3d(0,0,0);  //Y //NULL
+	v3d cameraUp = v3d(0,0,1);        //Z
 
-	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(3,0,0), 1)});
+	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(5,3,0), 1) , Sphere(v3d(10,0,0), 3)});
 
 	//float FOV = 90.;
 	const float unitsPerPixel = 0.001;
 
 	bool OnUserCreate() override {
-		cameraParallel = cameraUp.cross(cameraDirection);
 		return true;
 	}
 
@@ -71,19 +71,58 @@ public:
 	}
 
 	olc::Pixel inicialTrace(int32_t x, int32_t y) {
-		//std::cout << fElapsedTime << std::endl;
 		v3d rayDirection = cameraDirection + (cameraParallel * (x * unitsPerPixel)) + (cameraUp * (y * unitsPerPixel));
 		rayDirection.normalize();
 
-		v3d intersection = v3d(0,0,0);
-		v3d normal = v3d(0,0,0);
+		return nTrace(cameraOrigin, rayDirection, 0);
+	}
 
-		if (esferas[0].intersect(cameraOrigin, rayDirection, intersection, normal)) {
-			float bla = sqrt(abs(rayDirection.dot(normal)));
-			olc::Pixel pix = background((rayDirection - 2 * dot(rayDirection, normal) * normal).normalized());
-			pix.r *= bla;
-			pix.g *= bla;
-			pix.b *= bla;
+	olc::Pixel nTrace(v3d& rayOrigin, v3d& rayDirection, int rayNumber) {
+		if (rayNumber > 3) return olc::Pixel(0,0,0); //background(rayDirection);
+
+		bool intersects = false;
+
+		v3d intersection = v3d(0,0,0); //NULL
+		v3d normal = v3d(0,0,0); //NULL
+
+		float distanceOfIntersection;
+		v3d newRayOrigin = v3d(0,0,0); //NULL
+		v3d reflectionNormal = v3d(0,0,0); //NULL
+
+		for (std::vector<Sphere>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it) {
+			if ((*it).intersect(rayOrigin, rayDirection, intersection, normal)) {
+				//if (rayNumber == 2) std::cout << ((rayOrigin-intersection).norm()) << std::endl;
+				if (!intersects) {
+					distanceOfIntersection = (rayOrigin-intersection).norm();
+					newRayOrigin = intersection;
+					reflectionNormal = normal;
+					intersects = true;
+				}
+				else {
+					float temDistance = (rayOrigin-intersection).norm();
+					//std::cout << distanceOfIntersection << "    " << temDistance << std::endl;
+					if (temDistance < distanceOfIntersection) {
+						distanceOfIntersection = (rayOrigin-intersection).norm();
+						newRayOrigin = intersection;
+						reflectionNormal = normal;
+					}
+					//else std::cout << "BLA\n";
+				}
+			}
+		
+		}
+		
+		if (intersects) {
+			float normalCorrection = sqrt(abs(rayDirection.dot(reflectionNormal)));
+
+			rayDirection = rayDirection - 2 * dot(rayDirection, reflectionNormal) * reflectionNormal;
+
+			olc::Pixel pix = nTrace(newRayOrigin, rayDirection, rayNumber+1);
+
+			pix.r *= normalCorrection;
+			pix.g *= normalCorrection;
+			pix.b *= normalCorrection;
+
 			return pix;
 		}
 		else return background(rayDirection);
@@ -98,18 +137,4 @@ int main()
 {
 	RayTracerEngine demo;
 	if (demo.Construct(800, 800, 1, 1)) demo.Start();
-	//Sphere bla = Sphere(2.1, 6.8);
-	//std::cout << bla.radius << std::endl;
-
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
