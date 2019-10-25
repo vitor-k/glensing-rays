@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
@@ -17,15 +18,16 @@ public:
 	v3d center;
 	float radius;
 	Sphere(v3d center, float radius) : center(center), radius(radius) {}
-	bool intersect(const v3d& origin, const v3d& ray, v3d& intersection, v3d& normal) {
+	bool intersect(const v3d& origin, const v3d& ray, v3d& intersection, v3d& normal) const{
 		v3d v = origin - center;
 		const float b = 2 * v.dot(ray);
-		const float c = v.dot(v) - radius*radius;
+		const float c = v.norm2() - radius*radius;
 		const float delta = b*b - 4 * c;
 		if (delta < 0) return false;
+		const float sqdelta = std::sqrtf(delta);
 
-		const float t1 = (-b - sqrt(delta)) / 2;
-		const float t2 = (-b - sqrt(delta)) / 2;
+		const float t1 = (-b + sqdelta) / 2;
+		const float t2 = (-b - sqdelta) / 2;
 
 		intersection = (t1 < t2) ? (center + t1*ray) : (center + t2*ray);
 		normal = intersection - center;
@@ -38,17 +40,19 @@ public:
 
 class RayTracerEngine : public olc::PixelGameEngine {
 public:
-	RayTracerEngine() { sAppName = "Ray Caster"; }
+	RayTracerEngine() : cameraOrigin({ 0,0,0 }), cameraDirection({ 1,0,0 }), cameraUp({ 0,0,1 }) {
+		sAppName = "Ray Caster"; 
+	}
 public:
-	v3d cameraOrigin = v3d(0,0,0);
-	v3d cameraDirection = v3d(1,0,0); //X
+	const v3d cameraOrigin;
+	const v3d cameraDirection;
 	v3d cameraParallel = v3d(0,0,0);  //Y
-	v3d cameraUp = v3d(0,0,1);        //Z
+	const v3d cameraUp;
 
 	std::vector<Sphere> esferas = std::vector<Sphere>({Sphere(v3d(3,0,0), 1)});
 
 	//float FOV = 90.;
-	float unitsPerPixel = 0.004;
+	const float unitsPerPixel = 0.004;
 
 	bool OnUserCreate() override {
 		cameraParallel = cameraUp.cross(cameraDirection);
@@ -78,7 +82,7 @@ public:
 		else return background(rayDirection);
 	}
 
-	olc::Pixel background(v3d direction) {
+	inline olc::Pixel background(v3d direction) const{
 		return olc::Pixel(125 + 125*direction.x, 125 + 125*direction.y, 125 + 125*direction.z);
 	}
 };
