@@ -64,3 +64,9 @@ constexpr v3d operator *(const float& numb, const v3d& vec) {
 std::ostream& operator<<(std::ostream& os, v3d vec) {
 	return os << vec.x << ", " << vec.y << ", " << vec.z;
 }
+v3d cross(const v3d& vec1, const v3d& vec2) {
+	return vec1.cross(vec2);
+}
+float dot(const v3d& vec1, const v3d& vec2) {
+	return vec1.dot(vec2);
+}
