@@ -51,16 +51,19 @@ public:
 	v3d cameraParallel;               //Y
 	v3d cameraUp = v3d(0,0,1);        //Z
 
-	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(5,3,0), 1) , Sphere(v3d(10,0,0), 3), Sphere(v3d(5,6,0), 1)});
+	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(10,6,0), 1) , Sphere(v3d(10,0,0), 3)});
 
 	//float FOV = 90.;
-	const float unitsPerPixel = 0.004;
+	const float unitsPerPixel = 0.002;
 
 	bool OnUserCreate() override {
 		return true;
 	}
-
+	float totalTime = 0;
 	bool OnUserUpdate(float fElapsedTime) override {
+		totalTime += fElapsedTime;
+		sceneObjects[0].center.x = 10 + 6 *cos(1 * totalTime);
+		sceneObjects[0].center.y = 6 * sin(1 * totalTime);
 		int32_t width = ScreenWidth();
 		int32_t height = ScreenHeight();
 		for (int x = 0; x < width; x++)
