@@ -7,6 +7,7 @@
 struct v3d {
 	float x, y, z;
 	constexpr v3d(const float& x,const float& y,const float& z) : x(x), y(y), z(z) {}
+	constexpr v3d() : x(0), y(0), z(0) {}
 	//Operators
 	constexpr v3d operator +(const v3d& vec) const { return v3d(x + vec.x, y + vec.y, z + vec.z); } 
 	constexpr v3d operator -(const v3d& vec) const { return v3d(x - vec.x, y - vec.y, z - vec.z); }

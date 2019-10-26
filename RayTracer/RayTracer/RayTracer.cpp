@@ -48,13 +48,13 @@ public:
 public:
 	v3d cameraOrigin = v3d(0,0,0);
 	v3d cameraDirection = v3d(1,0,0); //X
-	v3d cameraParallel = v3d(0,0,0);  //Y //NULL
+	v3d cameraParallel;               //Y
 	v3d cameraUp = v3d(0,0,1);        //Z
 
-	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(5,3,0), 1) , Sphere(v3d(10,0,0), 3)});
+	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(5,3,0), 1) , Sphere(v3d(10,0,0), 3), Sphere(v3d(5,6,0), 1)});
 
 	//float FOV = 90.;
-	const float unitsPerPixel = 0.001;
+	const float unitsPerPixel = 0.004;
 
 	bool OnUserCreate() override {
 		return true;
@@ -78,20 +78,19 @@ public:
 	}
 
 	olc::Pixel nTrace(v3d& rayOrigin, v3d& rayDirection, int rayNumber) {
-		if (rayNumber > 3) return olc::Pixel(0,0,0); //background(rayDirection);
+		if (rayNumber > 6) return background(rayDirection);//olc::Pixel(0,0,0);
 
 		bool intersects = false;
 
-		v3d intersection = v3d(0,0,0); //NULL
-		v3d normal = v3d(0,0,0); //NULL
+		v3d intersection;
+		v3d normal;
 
 		float distanceOfIntersection;
-		v3d newRayOrigin = v3d(0,0,0); //NULL
-		v3d reflectionNormal = v3d(0,0,0); //NULL
+		v3d newRayOrigin;
+		v3d reflectionNormal;
 
 		for (std::vector<Sphere>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it) {
 			if ((*it).intersect(rayOrigin, rayDirection, intersection, normal)) {
-				//if (rayNumber == 2) std::cout << ((rayOrigin-intersection).norm()) << std::endl;
 				if (!intersects) {
 					distanceOfIntersection = (rayOrigin-intersection).norm();
 					newRayOrigin = intersection;
@@ -100,28 +99,26 @@ public:
 				}
 				else {
 					float temDistance = (rayOrigin-intersection).norm();
-					//std::cout << distanceOfIntersection << "    " << temDistance << std::endl;
 					if (temDistance < distanceOfIntersection) {
 						distanceOfIntersection = (rayOrigin-intersection).norm();
 						newRayOrigin = intersection;
 						reflectionNormal = normal;
 					}
-					//else std::cout << "BLA\n";
 				}
 			}
 		
 		}
 		
 		if (intersects) {
-			float normalCorrection = sqrt(abs(rayDirection.dot(reflectionNormal)));
+			//float normalCorrection = sqrt(abs(rayDirection.dot(reflectionNormal)));
 
 			rayDirection = rayDirection - 2 * dot(rayDirection, reflectionNormal) * reflectionNormal;
 
 			olc::Pixel pix = nTrace(newRayOrigin, rayDirection, rayNumber+1);
 
-			pix.r *= normalCorrection;
-			pix.g *= normalCorrection;
-			pix.b *= normalCorrection;
+			//pix.r *= normalCorrection;
+			//pix.g *= normalCorrection;
+			//pix.b *= normalCorrection;
 
 			return pix;
 		}
