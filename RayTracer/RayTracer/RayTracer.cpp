@@ -1,5 +1,4 @@
-// RayTracer.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Ray tracer engine, using the olcGameEngine, from One Lone Coder
 
 #include <iostream>
 #include <vector>
@@ -11,28 +10,30 @@
 #include "v3d.h"
 
 
-//Sphere
+//Mirrored Sphere
 
 class Sphere {
 public:
 	v3d center;
 	float radius;
 	Sphere(v3d center, float radius) : center(center), radius(radius) {}
-	bool intersect(const v3d& origin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
-		v3d v = origin - center;
+
+	bool intersect(const v3d& rayorigin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
+		// Based on the code in medium.com/farouk-ounanes-home-on-the-internet/ray-tracer-in-c-from-scratch-e013269884b6
+		v3d v = rayorigin - center;
 		const float b = 2 * v.dot(rayDirection);
 		const float c = v.norm2() - radius*radius;
 		const float delta = b*b - 4 * c;
-		if (delta < 0) return false;
 
-		const float t1 = (-b - sqrt(delta)) / 2;
+		if (delta < 0) return false; // If delta is negative, the ray doesn`t intersect 
 
-		if (t1<0) return false;
+		const float t = (-b - sqrt(delta)) / 2;
 
-		intersection = origin + t1*rayDirection;
+		if (t<0) return false; // If t is negative, the ray intersects before the ray origin
 
-		normal = intersection - center;
-		normal.normalize();
+		intersection = rayorigin + t*rayDirection;
+
+		normal = (intersection - center) / radius; // Normal vector to the surface in the intersection
 
 		return true;
 	}
@@ -46,24 +47,28 @@ public:
 		cameraParallel = cameraUp.cross(cameraDirection);
 	}
 public:
-	v3d cameraOrigin = v3d(0,0,0);
-	v3d cameraDirection = v3d(1,0,0); //X
-	v3d cameraParallel;               //Y
-	v3d cameraUp = v3d(0,0,1);        //Z
+	v3d cameraOrigin = v3d(0,0,0);    //    Origin of the rays of the camera
+	v3d cameraDirection = v3d(1,0,0); //X - Direction the camera is pointing
+	v3d cameraParallel;               //Y - Normal to the other vectors and parallel to the image plane
+	v3d cameraUp = v3d(0,0,1);        //Z - Defines the upside of the camera
 
-	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(10,6,0), 1) , Sphere(v3d(10,0,0), 3)});
+	std::vector<Sphere> sceneObjects = std::vector<Sphere>({Sphere(v3d(10,6,0), 1) , Sphere(v3d(10,6,0), 1) , Sphere(v3d(10,0,0), 3)}); // Objects in the scene
 
 	//float FOV = 90.;
-	const float unitsPerPixel = 0.002;
+	const float unitsPerPixel = 0.0025; //Defines the FOV, TODO: stop making it pixel dependent
 
 	bool OnUserCreate() override {
 		return true;
 	}
+
 	float totalTime = 0;
+
 	bool OnUserUpdate(float fElapsedTime) override {
 		totalTime += fElapsedTime;
-		sceneObjects[0].center.x = 10 + 6 *cos(1 * totalTime);
-		sceneObjects[0].center.y = 6 * sin(1 * totalTime);
+		sceneObjects[0].center.x = 10 + 8 *cos(1 * totalTime) + 2 * sin(3*totalTime);
+		sceneObjects[0].center.y = 8 * sin(1 * totalTime) + 2 * cos(3*totalTime);
+		sceneObjects[1].center.x = 10 + 8 *cos(1 * totalTime) + 2 * cos(3*totalTime);
+		sceneObjects[1].center.y = 8 * sin(1 * totalTime) - 2 * sin(3*totalTime);
 		int32_t width = ScreenWidth();
 		int32_t height = ScreenHeight();
 		for (int x = 0; x < width; x++)
@@ -73,8 +78,8 @@ public:
 		return true;
 	}
 
-	olc::Pixel inicialTrace(int32_t x, int32_t y) {
-		v3d rayDirection = cameraDirection + (cameraParallel * (x * unitsPerPixel)) + (cameraUp * (y * unitsPerPixel));
+	olc::Pixel inicialTrace(int32_t planeX, int32_t planeY) {
+		v3d rayDirection = cameraDirection + (cameraParallel * (planeX * unitsPerPixel)) + (cameraUp * (planeY * unitsPerPixel));
 		rayDirection.normalize();
 
 		return nTrace(cameraOrigin, rayDirection, 0);
