@@ -90,3 +90,6 @@ v3d cross(const v3d& vec1, const v3d& vec2) {
 float dot(const v3d& vec1, const v3d& vec2) {
 	return vec1.dot(vec2);
 }
+v3d normalized(const v3d& vect) {
+	return vect.normalized();
+}
