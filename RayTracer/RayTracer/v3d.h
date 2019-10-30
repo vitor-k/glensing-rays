@@ -88,12 +88,12 @@ std::ostream& operator<<(std::ostream& os, v3d vec) {
 
 //Makes it easier to multiply vectors
 
-v3d cross(const v3d& vec1, const v3d& vec2) {
+constexpr v3d cross(const v3d& vec1, const v3d& vec2){
 	return vec1.cross(vec2);
 }
-float dot(const v3d& vec1, const v3d& vec2) {
+constexpr float dot(const v3d& vec1, const v3d& vec2){
 	return vec1.dot(vec2);
 }
-v3d normalized(const v3d& vect) {
+constexpr v3d normalized(const v3d& vect){
 	return vect.normalized();
 }
