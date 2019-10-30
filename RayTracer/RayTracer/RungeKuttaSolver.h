@@ -5,14 +5,16 @@
 
 static class RungeKuttaSolver
 {
-	static v3d RungeKutta4Solver(float step, float tFinal, v3d initial, const std::function<v3d(float, v3d)>& f);
+	template <typename T>
+	static T RungeKutta4Solver(float step, float tFinal, T initial, const std::function<T(float, T)>& f);
 
 };
 
-v3d RungeKuttaSolver::RungeKutta4Solver(float step, float tFinal, v3d initial, const std::function<v3d(float, v3d)>& f) {
-	v3d current = initial;
-	v3d next = initial;
-	v3d k1, k2, k3, k4;
+template <typename T>
+T RungeKuttaSolver::RungeKutta4Solver(float step, float tFinal, T initial, const std::function<T(float, T)>& f) {
+	T current = initial;
+	T next = initial;
+	T k1, k2, k3, k4;
 
 	for (float t = 0; t < tFinal; t += step) {
 		current = next;

@@ -73,6 +73,10 @@ struct v3d {
 	}
 };
 
+struct State3d {
+	v3d s, v;
+};
+
 //More operators
 
 constexpr v3d operator *(const float& numb, const v3d& vec) {
