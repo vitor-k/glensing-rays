@@ -9,8 +9,7 @@
 
 #include "v3d.h"
 #include "Sphere.h"
-
-
+#include "GravitationalEntity.h"
 
 
 class RayTracerEngine : public olc::PixelGameEngine {
