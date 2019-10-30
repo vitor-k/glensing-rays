@@ -75,6 +75,9 @@ struct v3d {
 
 struct State3d {
 	v3d s, v;
+
+	constexpr State3d operator/(const float& numb);
+	constexpr State3d operator+(const State3d& other);
 };
 
 //More operators
@@ -96,4 +99,15 @@ constexpr float dot(const v3d& vec1, const v3d& vec2){
 }
 constexpr v3d normalized(const v3d& vect){
 	return vect.normalized();
+}
+
+
+constexpr State3d operator *(const float& numb, const State3d& state) {
+	return { numb * state.s, numb * state.v };
+}
+constexpr State3d State3d::operator/(const float& numb) {
+	return { s/numb, v/numb };
+}
+constexpr State3d State3d::operator+(const State3d& other) {
+	return { s +other.s, v +other.v };
 }
