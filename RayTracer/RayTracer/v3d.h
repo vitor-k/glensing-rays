@@ -82,7 +82,7 @@ std::ostream& operator<<(std::ostream& os, v3d vec) {
 	return os << vec.x << ", " << vec.y << ", " << vec.z;
 }
 
-//Makes it aesier to multiply vectors
+//Makes it easier to multiply vectors
 
 v3d cross(const v3d& vec1, const v3d& vec2) {
 	return vec1.cross(vec2);

@@ -19,12 +19,15 @@ public:
 		cameraParallel = cameraUp.cross(cameraDirection);
 	}
 public:
-	v3d cameraOrigin = v3d(0,0,0);    //    Origin of the rays of the camera
+	v3d cameraOrigin = v3d(-3,0,0);    //    Origin of the rays of the camera
 	v3d cameraDirection = v3d(1,0,0); //X - Direction the camera is pointing
 	v3d cameraParallel;               //Y - Normal to the other vectors and parallel to the image plane
 	v3d cameraUp = v3d(0,0,1);        //Z - Defines the upside of the camera #3db7ef
 
-	std::vector<Sphere*> sceneObjects = std::vector<Sphere*>({new CoolSphere(v3d(10,6,0), 1) , new OpaqueSphere(v3d(10,6,0), 1, 61,186,239) , new MirroredSphere(v3d(10,0,0), 3)}); // Objects in the scene
+	std::vector<Sphere*> sceneObjects = std::vector<Sphere*>({new CoolSphere(v3d(10,6,0), 1) ,
+															  new OpaqueSphere(v3d(10,6,0), 1, 60,190,240) ,
+															  new MirroredSphere(v3d(10,0,0), 3) ,
+															  new AtmoSphere(v3d(10,-6,0), 2, 100,50,10, 200,200,255)}); // Objects in the scene
 
 	//float FOV = 90.;
 	const float unitsPerPixel = 0.0025; //Defines the FOV, TODO: stop making it pixel amount dependent
@@ -41,6 +44,8 @@ public:
 		sceneObjects[0]->center.y = 8 * sin(1 * totalTime) + 2 * cos(3*totalTime);
 		sceneObjects[1]->center.x = 10 + 8 *cos(1 * totalTime) + 2 * cos(3*totalTime);
 		sceneObjects[1]->center.y = 8 * sin(1 * totalTime) - 2 * sin(3*totalTime);
+		sceneObjects[3]->center.x = 10 - 8 *cos(1 * totalTime);
+		sceneObjects[3]->center.y =-8 * sin(1 * totalTime);
 		int32_t width = ScreenWidth();
 		int32_t height = ScreenHeight();
 		for (int x = 0; x < width; x++)
