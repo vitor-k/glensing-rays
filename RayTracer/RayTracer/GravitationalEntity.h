@@ -16,4 +16,18 @@ public:
 
 	GravitationalEntity(v3d center, float mass) : Sphere(center, 2 * G * M / (c * c)), M(mass), schwarzschildRadius(2 * G * M / (c * c)) {
 	}
+
+	State3d statePonto(float t, State3d estado) {
+		v3d raio = (estado.s - center);
+		State3d retorno{estado.v, raio.normalized()*(-G*M/raio.norm2())};
+		return retorno;
+	}
+
+	bool intersect(const v3d& rayorigin, const v3d& rayDirection, v3d& intersection, v3d& normal) const override {
+		// TODO
+	}
+	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override{
+		pix = olc::Pixel(0, 0, 0);
+		return true;
+	}
 };
