@@ -24,6 +24,11 @@ T RungeKuttaSolver::RungeKutta4Solver(float step, float tFinal, T initial, C& ca
 		k3 = step * (caller.*f)(t + step / 2, current + k2 / 2);
 		k4 = step * (caller.*f)(t + step, current + k3);
 		next = current + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+
+		next.v.normalize();
+		if ((next.s - caller.center).norm() < caller.schwarzschildRadius) {return next;}
+		if ((next.s - caller.center).norm() > caller.outerRadius) {return next;}
 	}
+	//std::cout<<"c\n";
 	return next;
 }

@@ -26,8 +26,9 @@ public:
 
 	std::vector<Sphere*> sceneObjects = std::vector<Sphere*>({new CoolSphere(v3d(10,6,0), 1) ,
 															  new OpaqueSphere(v3d(10,6,0), 1, 60,190,240) ,
-															  new MirroredSphere(v3d(10,0,0), 3) ,
-															  new AtmoSphere(v3d(10,-6,0), 2, 100,50,10, 200,200,255)}); // Objects in the scene
+															  //new MirroredSphere(v3d(10,0,0), 3) ,
+															  new GravitationalEntity(v3d(10,0,0), 0.8, 5) /*,
+															  new AtmoSphere(v3d(10,-6,0), 2, 100,50,10, 200,200,255)*/}); // Objects in the scene
 
 	//float FOV = 90.;
 	const float unitsPerPixel = 0.0025; //Defines the FOV, TODO: stop making it pixel amount dependent
@@ -39,13 +40,13 @@ public:
 	float totalTime = 0;
 
 	bool OnUserUpdate(float fElapsedTime) override {
-		totalTime += fElapsedTime;
+		totalTime += 0.1f;
 		sceneObjects[0]->center.x = 10 + 8 *cos(1 * totalTime) + 2 * sin(3*totalTime);
 		sceneObjects[0]->center.y = 8 * sin(1 * totalTime) + 2 * cos(3*totalTime);
 		sceneObjects[1]->center.x = 10 + 8 *cos(1 * totalTime) + 2 * cos(3*totalTime);
 		sceneObjects[1]->center.y = 8 * sin(1 * totalTime) - 2 * sin(3*totalTime);
-		sceneObjects[3]->center.x = 10 - 8 *cos(1 * totalTime);
-		sceneObjects[3]->center.y =-8 * sin(1 * totalTime);
+		/*sceneObjects[3]->center.x = 10 - 8 *cos(1 * totalTime);
+		sceneObjects[3]->center.y =-8 * sin(1 * totalTime);*/
 		int32_t width = ScreenWidth();
 		int32_t height = ScreenHeight();
 		for (int x = 0; x < width; x++)
@@ -116,5 +117,5 @@ public:
 int main()
 {
 	RayTracerEngine demo;
-	if (demo.Construct(800, 800, 1, 1)) demo.Start();
+	if (demo.Construct(800,800,1,1)) demo.Start();
 }

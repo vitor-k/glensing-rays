@@ -8,7 +8,7 @@ public:
 	float outerRadius;
 	Sphere(v3d center, float outerRadius) : center(center), outerRadius(outerRadius) {}
 
-	virtual bool intersect(const v3d& rayorigin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
+	bool intersect(const v3d& rayorigin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
 		// Based on the code in medium.com/farouk-ounanes-home-on-the-internet/ray-tracer-in-c-from-scratch-e013269884b6
 		v3d v = rayorigin - center;
 		const float b = 2 * v.dot(rayDirection);
