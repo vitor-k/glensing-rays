@@ -3,32 +3,14 @@
 #include <functional>
 #include "v3d.h"
 
+class GravitationalEntity;
+
 static class RungeKuttaSolver
 {
 public:
+	static State3d RungeKutta4Solverf(const float& step, const int& nSteps, const State3d& initial, const GravitationalEntity& caller);
+
 	template <typename T, class C>
-	static T RungeKutta4Solver(float step, float tFinal, T initial, C& caller, T (C::*f)(float, T));
+	static T RungeKutta4Solver(const float& step, const int& nSteps, T initial, C& caller, T (C::*f)(float, T));
 
 };
-
-template <typename T, class C>
-T RungeKuttaSolver::RungeKutta4Solver(float step, float tFinal, T initial, C& caller, T (C::*f)(float, T)) {
-	T current = initial;
-	T next = initial;
-	T k1, k2, k3, k4;
-
-	for (float t = 0; t < tFinal; t += step) {
-		current = next;
-		k1 = step * (caller.*f)(t, current);
-		k2 = step * (caller.*f)(t + step / 2, current + k1 / 2);
-		k3 = step * (caller.*f)(t + step / 2, current + k2 / 2);
-		k4 = step * (caller.*f)(t + step, current + k3);
-		next = current + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-
-		next.v.normalize();
-		if ((next.s - caller.center).norm() < caller.schwarzschildRadius) {return next;}
-		if ((next.s - caller.center).norm() > caller.outerRadius) {return next;}
-	}
-	//std::cout<<"c\n";
-	return next;
-}

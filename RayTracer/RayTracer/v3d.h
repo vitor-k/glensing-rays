@@ -73,20 +73,10 @@ struct v3d {
 	}
 };
 
-struct State3d {
-	v3d s, v;
-
-	constexpr State3d operator/(const float& numb);
-	constexpr State3d operator+(const State3d& other);
-};
-
 //More operators
 
 constexpr v3d operator *(const float& numb, const v3d& vec) {
 	return vec * numb;
-}
-std::ostream& operator<<(std::ostream& os, v3d vec) {
-	return os << vec.x << ", " << vec.y << ", " << vec.z;
 }
 
 //Makes it easier to multiply vectors
@@ -102,6 +92,12 @@ constexpr v3d normalized(const v3d& vect){
 }
 
 
+struct State3d {
+	v3d s, v;
+
+	constexpr State3d operator/(const float& numb);
+	constexpr State3d operator+(const State3d& other);
+};
 constexpr State3d operator *(const float& numb, const State3d& state) {
 	return { numb * state.s, numb * state.v };
 }

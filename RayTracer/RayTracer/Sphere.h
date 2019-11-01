@@ -1,11 +1,13 @@
 #pragma once
 
+#include "v3d.h"
+#include "olcPixelGameEngine.h"
 //Sphere
 
 class Sphere {
 public:
 	v3d center;
-	float outerRadius;
+	const float outerRadius;
 	Sphere(v3d center, float outerRadius) : center(center), outerRadius(outerRadius) {}
 
 	bool intersect(const v3d& rayorigin, const v3d& rayDirection, v3d& intersection, v3d& normal) const{
