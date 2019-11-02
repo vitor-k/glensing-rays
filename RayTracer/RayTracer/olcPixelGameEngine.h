@@ -1934,7 +1934,7 @@ namespace olc
 				{
 					fFrameTimer -= 1.0f;
 
-					std::string sTitle = "OneLoneCoder.com - Pixel Game Engine - " + sAppName + " - FPS: " + std::to_string(nFrameCount/fElapsedTime);
+					std::string sTitle = sAppName + " - FPS: " + std::to_string(nFrameCount/fElapsedTime);
 #if defined(_WIN32)
 #ifdef UNICODE
 					SetWindowText(olc_hWnd, ConvertS2W(sTitle).c_str());

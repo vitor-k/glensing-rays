@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <thread>
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
@@ -11,6 +12,7 @@
 #include "Sphere.h"
 #include "GravitationalEntity.h"
 
+const int nThreads=4;
 
 class RayTracerEngine : public olc::PixelGameEngine {
 public:
@@ -39,6 +41,11 @@ public:
 
 	float totalTime = 0;
 
+	void drawingThread(int start, int end, int32_t width, int32_t height, olc::Pixel* tela) {
+		for (int i = start; i < end && i<width*height; i++) {
+			tela[i] = inicialTrace(i%width - width / 2, i/width - height / 2);
+		}
+	}
 	bool OnUserUpdate(float fElapsedTime) override {
 		totalTime += 0.1f;
 		sceneObjects[0]->center.x = 10 + 8 *cos(1 * totalTime) + 2 * sin(3*totalTime);
@@ -47,12 +54,26 @@ public:
 		sceneObjects[1]->center.y = 8 * sin(1 * totalTime) - 2 * sin(3*totalTime);
 		/*sceneObjects[3]->center.x = 10 - 8 *cos(1 * totalTime);
 		sceneObjects[3]->center.y =-8 * sin(1 * totalTime);*/
-		int32_t width = ScreenWidth();
-		int32_t height = ScreenHeight();
-		for (int x = 0; x < width; x++)
-			for (int y = 0; y < height; y++){
-				Draw(x, y, inicialTrace(x - width/2, y - height / 2));
+		const int32_t width = ScreenWidth();
+		const int32_t height = ScreenHeight();
+
+		olc::Pixel *tela = new olc::Pixel[width * height];
+
+		std::thread threads[nThreads];
+		for (int i = 0; i < nThreads; i++) {
+			threads[i] = std::thread(&RayTracerEngine::drawingThread, this, i * width * height / nThreads, (i + 1) * width * height / nThreads, width, height, tela);
+		}
+		for (int i = 0; i < nThreads; i++) {
+			threads[i].join();
+		}
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				Draw(x, y, tela[y * width + x]);
 			}
+		}
+		delete[] tela;
+
 		return true;
 	}
 
