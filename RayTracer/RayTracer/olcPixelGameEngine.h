@@ -684,7 +684,7 @@ namespace olc
 			is.read((char*)&width, sizeof(int32_t));
 			is.read((char*)&height, sizeof(int32_t));
 			pColData = new Pixel[width * height];
-			is.read((char*)pColData, width * height * sizeof(uint32_t));
+			is.read((char*)pColData, width * height * (int32_t)sizeof(uint32_t));
 		};
 
 		// These are essentially Memory Surfaces represented by olc::Sprite
@@ -1747,20 +1747,14 @@ namespace olc
 
 		auto tp1 = std::chrono::system_clock::now();
 		auto tp2 = std::chrono::system_clock::now();
+		std::chrono::duration<float> elapsedTime = tp2 - tp1;
+		float fElapsedTime = elapsedTime.count();
 
 		while (bAtomActive)
 		{
 			// Run as fast as possible
 			while (bAtomActive)
 			{
-				// Handle Timing
-				tp2 = std::chrono::system_clock::now();
-				std::chrono::duration<float> elapsedTime = tp2 - tp1;
-				tp1 = tp2;
-
-				// Our time per frame coefficient
-				float fElapsedTime = elapsedTime.count();
-
 #if defined(__linux__)
 				// Handle Xlib Message Loop - we do this in the
 				// same thread that OpenGL was created so we dont
@@ -1926,6 +1920,14 @@ namespace olc
 #if defined(__linux__)
 				glXSwapBuffers(olc_Display, olc_Window);
 #endif
+
+				// Handle Timing
+				tp2 = std::chrono::system_clock::now();
+				elapsedTime = tp2 - tp1;
+				tp1 = tp2;
+
+				// Our time per frame coefficient
+				fElapsedTime = elapsedTime.count();
 
 				// Update Title Bar
 				fFrameTimer += fElapsedTime;

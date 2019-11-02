@@ -88,53 +88,49 @@ public:
 		v3d rayDirection = cameraDirection + (cameraParallel * (planeX * unitsPerPixel)) + (cameraUp * (planeY * unitsPerPixel));
 		rayDirection.normalize();
 
-		return nTrace(cameraOrigin, rayDirection, 0);
+		return nTrace(cameraOrigin, rayDirection);
 	}
 
-	olc::Pixel nTrace(const v3d& rayOrigin, v3d& rayDirection, const int rayNumber) const {
-		if (rayNumber > 6) return background(rayDirection);//olc::Pixel(0,0,0);
+	olc::Pixel nTrace(const v3d& rayOrigin, const v3d& rayDirection) const {
+		int rayNumber = 0;
 
-		bool intersects = false;
+		v3d origin = rayOrigin;
+		v3d direction = rayDirection;
 
 		v3d intersection;
 		v3d normal;
 
 		float distanceOfIntersection;
-		v3d closestIntersection;
+		v3d closestIntersection = rayOrigin;
 		v3d intersectionNormal;
-		Sphere *intersectedObject = NULL;
+		Sphere* intersectedObject = NULL;
 
-		for (int i=0; i < sceneObjects.size(); i++) {
-			if ((sceneObjects[i])->intersect(rayOrigin, rayDirection, intersection, normal)) {
-				if (!intersects) {
-					distanceOfIntersection = (rayOrigin-intersection).norm();
-					closestIntersection = intersection;
-					intersectionNormal = normal;
-					intersectedObject = sceneObjects[i];
-					intersects = true;
-				}
-				else {
-					float temDistance = (rayOrigin-intersection).norm();
-					if (temDistance < distanceOfIntersection) {
-						distanceOfIntersection = (rayOrigin-intersection).norm();
+		bool intersects = false;
+		olc::Pixel pix;
+
+		for(rayNumber=0; rayNumber < 6; rayNumber++){
+			origin = closestIntersection;
+			intersects = false;
+
+			for (size_t i = 0; i < sceneObjects.size(); i++) {
+				if ((sceneObjects[i])->intersect(origin, direction, intersection, normal)) {
+					if (!intersects || (origin - intersection).norm() < distanceOfIntersection) {
+						distanceOfIntersection = (origin - intersection).norm();
 						closestIntersection = intersection;
 						intersectionNormal = normal;
 						intersectedObject = sceneObjects[i];
+						intersects = true;
 					}
 				}
 			}
-		
-		}
-		if (intersects) {
-			olc::Pixel pix;
-
-			if (intersectedObject->response(rayDirection, closestIntersection, intersectionNormal, pix)) {
+			if (!intersects) {
+				return background(direction);
+			}
+			else if (intersectedObject->response(direction, closestIntersection, intersectionNormal, pix)) {
 				return pix;
-			} else {
-				return nTrace(closestIntersection, rayDirection, rayNumber+1);
 			}
 		}
-		else return background(rayDirection);
+		return background(direction);
 	}
 
 	inline olc::Pixel background(v3d direction) const{
