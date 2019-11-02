@@ -12,7 +12,7 @@
 #include "Sphere.h"
 #include "GravitationalEntity.h"
 
-const int nThreads=4;
+const int nThreads=8;
 
 class RayTracerEngine : public olc::PixelGameEngine {
 public:
@@ -41,12 +41,12 @@ public:
 
 	float totalTime = 0;
 
-	void drawingThread(int start, int end, int32_t width, int32_t height, olc::Pixel* tela) {
+	void drawingThread(const int start, const int end, const int32_t width, const int32_t height, olc::Pixel* tela) const {
 		for (int i = start; i < end; i++) {
 			tela[i] = inicialTrace(i%width - width / 2, i/width - height / 2);
 		}
 	}
-	void drawingThread2(int offset, int32_t width, int32_t height, olc::Pixel* tela) {
+	void drawingThread2(const int offset, const int32_t width, const int32_t height, olc::Pixel* tela) const {
 		for (int i = 0; i * nThreads + offset < width * height; i++) {
 			tela[i*nThreads + offset] = inicialTrace((i * nThreads + offset) % width - width / 2, (i * nThreads + offset) / width - height / 2);
 		}
@@ -65,9 +65,7 @@ public:
 		olc::Pixel *tela = new olc::Pixel[width * height];
 
 		std::thread threads[nThreads];
-		/*for (int i = 0; i < nThreads; i++) {
-			threads[i] = std::thread(&RayTracerEngine::drawingThread, this, i * width * height / nThreads, (i + 1) * width * height / nThreads, width, height, tela);
-		}*/
+
 		for (int i = 0; i < nThreads; i++) {
 			threads[i] = std::thread(&RayTracerEngine::drawingThread2, this, i, width, height, tela);
 		}
@@ -86,14 +84,14 @@ public:
 		return true;
 	}
 
-	olc::Pixel inicialTrace(int32_t planeX, int32_t planeY) {
+	olc::Pixel inicialTrace(const int32_t planeX, const int32_t planeY) const {
 		v3d rayDirection = cameraDirection + (cameraParallel * (planeX * unitsPerPixel)) + (cameraUp * (planeY * unitsPerPixel));
 		rayDirection.normalize();
 
 		return nTrace(cameraOrigin, rayDirection, 0);
 	}
 
-	olc::Pixel nTrace(v3d& rayOrigin, v3d& rayDirection, int rayNumber) {
+	olc::Pixel nTrace(const v3d& rayOrigin, v3d& rayDirection, const int rayNumber) const {
 		if (rayNumber > 6) return background(rayDirection);//olc::Pixel(0,0,0);
 
 		bool intersects = false;
@@ -106,13 +104,13 @@ public:
 		v3d intersectionNormal;
 		Sphere *intersectedObject = NULL;
 
-		for (std::vector<Sphere*>::iterator it = sceneObjects.begin(); it != sceneObjects.end(); ++it) {
-			if ((*it)->intersect(rayOrigin, rayDirection, intersection, normal)) {
+		for (int i=0; i < sceneObjects.size(); i++) {
+			if ((sceneObjects[i])->intersect(rayOrigin, rayDirection, intersection, normal)) {
 				if (!intersects) {
 					distanceOfIntersection = (rayOrigin-intersection).norm();
 					closestIntersection = intersection;
 					intersectionNormal = normal;
-					intersectedObject = *it;
+					intersectedObject = sceneObjects[i];
 					intersects = true;
 				}
 				else {
@@ -121,7 +119,7 @@ public:
 						distanceOfIntersection = (rayOrigin-intersection).norm();
 						closestIntersection = intersection;
 						intersectionNormal = normal;
-						intersectedObject = *it;
+						intersectedObject = sceneObjects[i];
 					}
 				}
 			}
