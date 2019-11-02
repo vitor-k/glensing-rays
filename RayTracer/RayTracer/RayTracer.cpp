@@ -42,8 +42,13 @@ public:
 	float totalTime = 0;
 
 	void drawingThread(int start, int end, int32_t width, int32_t height, olc::Pixel* tela) {
-		for (int i = start; i < end && i<width*height; i++) {
+		for (int i = start; i < end; i++) {
 			tela[i] = inicialTrace(i%width - width / 2, i/width - height / 2);
+		}
+	}
+	void drawingThread2(int offset, int32_t width, int32_t height, olc::Pixel* tela) {
+		for (int i = 0; i * nThreads + offset < width * height; i++) {
+			tela[i*nThreads + offset] = inicialTrace((i * nThreads + offset) % width - width / 2, (i * nThreads + offset) / width - height / 2);
 		}
 	}
 	bool OnUserUpdate(float fElapsedTime) override {
@@ -60,9 +65,13 @@ public:
 		olc::Pixel *tela = new olc::Pixel[width * height];
 
 		std::thread threads[nThreads];
-		for (int i = 0; i < nThreads; i++) {
+		/*for (int i = 0; i < nThreads; i++) {
 			threads[i] = std::thread(&RayTracerEngine::drawingThread, this, i * width * height / nThreads, (i + 1) * width * height / nThreads, width, height, tela);
+		}*/
+		for (int i = 0; i < nThreads; i++) {
+			threads[i] = std::thread(&RayTracerEngine::drawingThread2, this, i, width, height, tela);
 		}
+
 		for (int i = 0; i < nThreads; i++) {
 			threads[i].join();
 		}
