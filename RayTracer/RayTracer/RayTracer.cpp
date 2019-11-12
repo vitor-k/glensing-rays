@@ -29,7 +29,7 @@ public:
 	std::vector<Sphere*> sceneObjects = std::vector<Sphere*>({new CoolSphere(v3d(10,6,0), 1) ,
 															  new OpaqueSphere(v3d(10,6,0), 1, 60,190,240) ,
 															  //new MirroredSphere(v3d(10,0,0), 3) ,
-															  new GravitationalEntity(v3d(10,0,0), 0.3, 5) /*,
+															  new GravitationalEntity(v3d(10,0,0), 0.1, 3) /*,
 															  new AtmoSphere(v3d(10,-6,0), 2, 100,50,10, 200,200,255)*/}); // Objects in the scene
 
 	//float FOV = 90.;

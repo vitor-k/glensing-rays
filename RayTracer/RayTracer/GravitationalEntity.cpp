@@ -16,25 +16,25 @@ bool GravitationalEntity::response(v3d& rayDirection, v3d& intersection, v3d& in
 	const State3d inicial{ intersection, rayDirection };
 	State3d final;
 
-	if (cachedResults.count({std::round( 400*intersection.x), std::round(400*intersection.y) }) > 0) {
-		State3d final = cachedResults[{std::round(400 * intersection.x), std::round(400 * intersection.y) }];
+	if (cachedResults.count({std::round( granularityMultiplier*intersection.x), std::round(granularityMultiplier*intersection.y), std::round(granularityMultiplier * intersection.z) }) > 0) {
+		State3d final = cachedResults[{std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier* intersection.z) }];
 		intersection = final.s;
 		rayDirection = final.v;
 		return false;
 	}
-	else if (blackCachedResults.count({ std::round(400 * intersection.x), std::round(400 * intersection.y) }) > 0) {
+	else if (blackCachedResults.count({ std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z) }) > 0) {
 		pix = olc::Pixel(0, 0, 0);
 		return true;
 	}
 	final = RungeKuttaSolver::RungeKutta4Solverf(0.001f, 100000, inicial, (*this));
 	//std::cout << (final.s - center).norm2() << std::endl;
 	if ((final.s - center).norm() < photonSphere) { //outerRadius * outerRadius) {
-		blackCachedResults.emplace(std::make_pair<int, int>(std::round(400 * intersection.x), std::round(400 * intersection.y)));
+		blackCachedResults.emplace(std::make_tuple<int, int, int>(std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z)));
 		pix = olc::Pixel(0, 0, 0);
 		return true;
 	}
 	else {
-		cachedResults.try_emplace(std::make_pair<int,int>(std::round(400 * intersection.x), std::round(400 * intersection.y)), final);
+		cachedResults.try_emplace(std::make_tuple<int,int,int>(std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z)), final);
 		intersection = final.s;
 		rayDirection = final.v;
 		return false;
