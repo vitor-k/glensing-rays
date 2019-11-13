@@ -11,9 +11,11 @@ public:
 	const float M{ 0 };
 	const float schwarzschildRadius{ 0 };
 	const float photonSphere{ 0 };
+	const float relativePhotonSphere{ 0 };
+	const float relativeOuterRadius{ 0 };
 
 	GravitationalEntity(v3d center, float mass, float radius);
-	State3d statePonto(const float& t, const State3d& estado) const;
+	StateLight statePonto(const float& t, const StateLight& estado) const;
 	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 
 };

@@ -140,6 +140,9 @@ public:
 
 int main()
 {
+	std::cout << asin(0) << std::endl;
+	std::cout << asin(0.99) << std::endl;
+	std::cout << asin(-0.99) << std::endl;
 	RayTracerEngine demo;
 	if (demo.Construct(800,800,1,1)) demo.Start();
 }

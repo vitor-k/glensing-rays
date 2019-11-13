@@ -92,18 +92,18 @@ constexpr v3d normalized(const v3d& vect){
 }
 
 
-struct State3d {
+struct StateLight {
 	v3d s, v;
 
-	constexpr State3d operator/(const float& numb);
-	constexpr State3d operator+(const State3d& other);
+	constexpr StateLight operator/(const float& numb);
+	constexpr StateLight operator+(const StateLight& other);
 };
-constexpr State3d operator *(const float& numb, const State3d& state) {
+constexpr StateLight operator *(const float& numb, const StateLight& state) {
 	return { numb * state.s, numb * state.v };
 }
-constexpr State3d State3d::operator/(const float& numb) {
+constexpr StateLight StateLight::operator/(const float& numb) {
 	return { s/numb, v/numb };
 }
-constexpr State3d State3d::operator+(const State3d& other) {
+constexpr StateLight StateLight::operator+(const StateLight& other) {
 	return { s +other.s, v +other.v };
 }

@@ -17,8 +17,9 @@ T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, T in
 		next = current + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
 
 		next.v.normalize();
-		if ((next.s - caller.center).norm() < caller.schwarzschildRadius) { return next; }
-		if ((next.s - caller.center).norm() > caller.outerRadius) { return next; }
+
+		if ((next.s).norm() < 1.5) { return next; }
+		if ((next.s).norm() > caller.relativeOuterRadius) { return next; }
 
 		t += step;
 	}
@@ -26,10 +27,10 @@ T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, T in
 }
 
 
-State3d RungeKuttaSolver::RungeKutta4Solverf(const float& step, const int& nSteps, const State3d& initial, const GravitationalEntity& caller) {
-	State3d current = initial;
-	State3d next = initial;
-	State3d k1, k2, k3, k4;
+StateLight RungeKuttaSolver::RungeKutta4Solverf(const float& step, const int& nSteps, const StateLight& initial, const GravitationalEntity& caller) {
+	StateLight current = initial;
+	StateLight next = initial;
+	StateLight k1, k2, k3, k4;
 	float distToCenter;
 
 	float t = 0;
@@ -42,8 +43,9 @@ State3d RungeKuttaSolver::RungeKutta4Solverf(const float& step, const int& nStep
 		next = current + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
 
 		next.v.normalize();
-		distToCenter = (next.s - caller.center).norm();
-		if ((distToCenter < caller.photonSphere) || (distToCenter > caller.outerRadius) ){ 
+		distToCenter = (next.s).norm();
+		//std::cout << next.s.x << ", " << next.s.y << ", " << next.s.z << "  .  " << next.v.x << ", " << next.v.y << ", " << next.v.z << std::endl;
+		if ((distToCenter < 1.5) || (distToCenter > (caller.relativeOuterRadius))) {
 			return next;
 		}
 
