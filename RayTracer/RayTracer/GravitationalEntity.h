@@ -15,7 +15,7 @@ public:
 	const float relativeOuterRadius{ 0 };
 
 	GravitationalEntity(v3d center, float mass, float radius);
-	StateLight statePonto(const float& t, const StateLight& estado) const;
+	State3d statePonto(const float& t, const State3d& estado) const;
 	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 
 };

@@ -27,10 +27,10 @@ T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, T in
 }
 
 
-StateLight RungeKuttaSolver::RungeKutta4Solverf(const float& step, const int& nSteps, const StateLight& initial, const GravitationalEntity& caller) {
-	StateLight current = initial;
-	StateLight next = initial;
-	StateLight k1, k2, k3, k4;
+State3d RungeKuttaSolver::RungeKutta4Solverf(const float& step, const int& nSteps, const State3d& initial, const GravitationalEntity& caller) {
+	State3d current = initial;
+	State3d next = initial;
+	State3d k1, k2, k3, k4;
 	float distToCenter;
 
 	float t = 0;
