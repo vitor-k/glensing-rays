@@ -6,6 +6,8 @@
 #include <thread>
 
 #define OLC_PGE_APPLICATION
+#define IMAGE_SAVING
+
 #include "olcPixelGameEngine.h"
 
 #include "v3d.h"

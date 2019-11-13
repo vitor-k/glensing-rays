@@ -1749,6 +1749,13 @@ namespace olc
 		auto tp2 = std::chrono::system_clock::now();
 		std::chrono::duration<float> elapsedTime = tp2 - tp1;
 		float fElapsedTime = elapsedTime.count();
+		
+
+		#ifdef IMAGE_SAVING
+		std::cout << "estive aqui" << std::endl;
+		int nImagem = 0;
+		bool saveImages = true;
+		#endif
 
 		while (bAtomActive)
 		{
@@ -1920,6 +1927,45 @@ namespace olc
 #if defined(__linux__)
 				glXSwapBuffers(olc_Display, olc_Window);
 #endif
+
+#if defined(IMAGE_SAVING)
+				if(saveImages){
+					// Make the BYTE array, factor of 3 because it's RBG.
+					BYTE* pixels = new BYTE[3 * nScreenWidth * nScreenHeight];
+
+					//glReadPixels(0, 0, nScreenWidth, nScreenHeight, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+					glPixelStorei(GL_PACK_ALIGNMENT, 1);
+					glReadBuffer(GL_FRONT);
+					glReadPixels(0, 0, nScreenWidth, nScreenHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, pixels);
+
+					//std::cout << "estive aqui 2" << std::endl;
+
+					std::fstream myfile;
+					//std::string filename = "glensing_images/glensing_" + std::to_string(nImagem) + ".ppm";
+					std::string filename = "glensing_images/glensing_" + std::to_string(nImagem) + ".tga";
+					std::cout << filename << std::endl;
+					//myfile.open(filename, std::ios::out | std::ios::binary);
+					FILE* outputFile;
+					fopen_s(&outputFile, filename.c_str(), "wb");
+
+					//if (myfile.is_open()) {
+					{
+						std::cout << "estive aqui 3" << std::endl;
+						short header[] = { 0, 2, 0, 0, 0, 0, (short)nScreenWidth, (short)nScreenHeight, 24 };
+						fwrite(&header, sizeof(header), 1, outputFile);
+						fwrite(pixels, 3 * nScreenWidth * nScreenHeight, 1, outputFile);
+						//myfile << "P6\n" << nScreenWidth << " " << nScreenHeight << "\n255\n";
+						//myfile << pixels;
+					}
+					// Free resources
+					//myfile.close();
+					delete[] pixels;
+					nImagem++;
+					saveImages = nImagem < 500;
+				}
+#endif
+
 
 				// Handle Timing
 				tp2 = std::chrono::system_clock::now();
