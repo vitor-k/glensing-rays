@@ -1960,9 +1960,10 @@ namespace olc
 					}
 					// Free resources
 					//myfile.close();
+					fclose(outputFile);
 					delete[] pixels;
 					nImagem++;
-					saveImages = nImagem < 500;
+					saveImages = nImagem < 50;
 				}
 #endif
 
