@@ -21,7 +21,7 @@ bool GravitationalEntity::response(v3d& rayDirection, v3d& intersection, v3d& in
 	if (useCache) {
 		if (cachedResults.count({ std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z) }) > 0) {
 			State3d final = cachedResults[{std::round(granularityMultiplier* intersection.x), std::round(granularityMultiplier* intersection.y), std::round(granularityMultiplier* intersection.z) }];
-			intersection = final.s;
+			intersection = final.s * schwarzschildRadius + center;
 			rayDirection = final.v;
 			return false;
 		}
