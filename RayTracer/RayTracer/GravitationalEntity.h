@@ -11,7 +11,7 @@ constexpr float c = 1; //299792458; // m/s
 constexpr float G = 1; //6.674e-11; // m^3/(kg*s^2)
 
 constexpr float granularityMultiplier = 2000;
-constexpr bool useCache = false;
+constexpr bool useCache = true;
 
 class GravitationalEntity : public Sphere {
 public:

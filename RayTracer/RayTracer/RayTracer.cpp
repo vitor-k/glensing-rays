@@ -6,7 +6,7 @@
 #include <thread>
 
 #define OLC_PGE_APPLICATION
-#define IMAGE_SAVING
+//#define IMAGE_SAVING
 
 #include "olcPixelGameEngine.h"
 
@@ -31,7 +31,7 @@ public:
 	std::vector<Sphere*> sceneObjects = std::vector<Sphere*>({new CoolSphere(v3d(10,6,0), 1) ,
 															  new OpaqueSphere(v3d(10,6,0), 1, 60,190,240) ,
 															  //new MirroredSphere(v3d(10,0,0), 3) ,
-															  new GravitationalEntity(v3d(10,0,0), 0.1, 3) /*,
+															  new GravitationalEntity(v3d(10,0,0), 0.1, 4) /*,
 															  new AtmoSphere(v3d(10,-6,0), 2, 100,50,10, 200,200,255)*/}); // Objects in the scene
 
 	//float FOV = 90.;
@@ -142,9 +142,6 @@ public:
 
 int main()
 {
-	std::cout << asin(0) << std::endl;
-	std::cout << asin(0.99) << std::endl;
-	std::cout << asin(-0.99) << std::endl;
 	RayTracerEngine demo;
 	if (demo.Construct(800,800,1,1)) demo.Start();
 }

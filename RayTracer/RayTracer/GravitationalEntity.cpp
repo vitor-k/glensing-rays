@@ -19,13 +19,14 @@ bool GravitationalEntity::response(v3d& rayDirection, v3d& intersection, v3d& in
 	State3d final;
 
 	if (useCache) {
-		if (cachedResults.count({ std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z) }) > 0) {
-			State3d final = cachedResults[{std::round(granularityMultiplier* intersection.x), std::round(granularityMultiplier* intersection.y), std::round(granularityMultiplier* intersection.z) }];
+		std::tuple<int, int, int> intersectionArredondado({ std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z) });
+		if (cachedResults.count(intersectionArredondado) > 0) {
+			State3d final = cachedResults[intersectionArredondado];
 			intersection = final.s * schwarzschildRadius + center;
 			rayDirection = final.v;
 			return false;
 		}
-		else if (blackCachedResults.count({ std::round(granularityMultiplier * intersection.x), std::round(granularityMultiplier * intersection.y), std::round(granularityMultiplier * intersection.z) }) > 0) {
+		else if (blackCachedResults.count(intersectionArredondado) > 0) {
 			pix = olc::Pixel(0, 0, 0);
 			return true;
 		}

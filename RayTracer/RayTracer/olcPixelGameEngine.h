@@ -1752,7 +1752,7 @@ namespace olc
 		
 
 		#ifdef IMAGE_SAVING
-		std::cout << "estive aqui" << std::endl;
+		
 		int nImagem = 0;
 		bool saveImages = true;
 		#endif
@@ -1950,8 +1950,7 @@ namespace olc
 					fopen_s(&outputFile, filename.c_str(), "wb");
 
 					//if (myfile.is_open()) {
-					{
-						std::cout << "estive aqui 3" << std::endl;
+					if(outputFile){
 						short header[] = { 0, 2, 0, 0, 0, 0, (short)nScreenWidth, (short)nScreenHeight, 24 };
 						fwrite(&header, sizeof(header), 1, outputFile);
 						fwrite(pixels, 3 * nScreenWidth * nScreenHeight, 1, outputFile);
@@ -1963,7 +1962,7 @@ namespace olc
 					fclose(outputFile);
 					delete[] pixels;
 					nImagem++;
-					saveImages = nImagem < 50;
+					saveImages = nImagem < 500;
 				}
 #endif
 
