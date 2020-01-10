@@ -14,4 +14,3 @@ if (MSVC)
 endif()
 
 add_subdirectory(src)
-

@@ -30,7 +30,7 @@ public:
 		return true;
 	}
 
-	virtual bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) = 0 {}
+	virtual bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) = 0;
 };
 
 class MirroredSphere : public Sphere {

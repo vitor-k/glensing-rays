@@ -5,7 +5,7 @@
 
 class GravitationalEntity;
 
-static class RungeKuttaSolver
+class RungeKuttaSolver
 {
 public:
 	static State3d RungeKutta4Solverf(const float& step, const int& nSteps, const State3d& initial, const GravitationalEntity& caller);
