@@ -9,3 +9,5 @@ add_executable(RayTracer
     GravitationalEntity.h
     olcPixelGameEngine.h
 )
+
+target_link_libraries(RayTracer X11 GL pthread png)

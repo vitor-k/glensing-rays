@@ -1,0 +1,22 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: check cmake
+      run: cmake --help
+    - name: configure
+      run: | 
+        sudo apt install libgl1-mesa-dev
+        mkdir build && cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+    - name: build
+      run: cmake --build build
+    - name: test
+      run: cd build && ctest
