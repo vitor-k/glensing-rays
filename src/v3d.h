@@ -56,21 +56,15 @@ struct v3d {
 	constexpr v3d cross(const v3d& vec) const {
 		return v3d(y*vec.z - z*vec.y, z*vec.x - x*vec.z, x*vec.y - y*vec.x);
 	}
-	//Euclidian norm
-	float norm() const {
-		return std::sqrt(norm2());
-	}
 	constexpr float norm2() const {
 		return x*x + y*y + z*z;
 	}
+	//Euclidian norm
+	float norm() const;
 	//Returns normalized vector
-	constexpr v3d normalized() const {
-		return *this / norm();
-	}
+	v3d normalized() const;
 	//Normalizes vector
-	constexpr void normalize() {
-		*this /= norm();
-	}
+	void normalize();
 };
 
 //More operators
@@ -86,9 +80,6 @@ constexpr v3d cross(const v3d& vec1, const v3d& vec2){
 }
 constexpr float dot(const v3d& vec1, const v3d& vec2){
 	return vec1.dot(vec2);
-}
-constexpr v3d normalized(const v3d& vect){
-	return vect.normalized();
 }
 
 
