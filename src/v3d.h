@@ -57,7 +57,7 @@ struct v3d {
 		return v3d(y*vec.z - z*vec.y, z*vec.x - x*vec.z, x*vec.y - y*vec.x);
 	}
 	//Euclidian norm
-	constexpr float norm() const {
+	float norm() const {
 		return std::sqrt(norm2());
 	}
 	constexpr float norm2() const {

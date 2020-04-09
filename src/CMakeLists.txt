@@ -10,4 +10,6 @@ add_executable(RayTracer
     olcPixelGameEngine.h
 )
 
-target_link_libraries(RayTracer X11 GL pthread png)
+if(NOT MSVC)
+    target_link_libraries(RayTracer X11 GL pthread png)
+endif()

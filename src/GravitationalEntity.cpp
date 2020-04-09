@@ -3,14 +3,14 @@
 #include <cmath>
 
 GravitationalEntity::GravitationalEntity(v3d center, float mass, float radius) : Sphere(center, radius), M(mass),
-                                         schwarzschildRadius(2 * G * M / (c * c) ), photonSphere(1.5*schwarzschildRadius),
+                                         schwarzschildRadius(2.f * G * M / (c * c) ), photonSphere(1.5f*schwarzschildRadius),
                                          relativeOuterRadius(outerRadius/schwarzschildRadius), relativePhotonSphere(photonSphere/schwarzschildRadius) {}
 
 
 State3d GravitationalEntity::statePonto(const float& t, const State3d& estado) const {
 	//const v3d raio = (estado.s - center);
 	const double h2 = cross(estado.v, estado.s).norm2();
-	return State3d{ estado.v, -1.5 * h2 * estado.s / pow(estado.s.norm2(), 2.5) };
+	return State3d{ estado.v, -1.5f * h2 * estado.s / pow(estado.s.norm2(), 2.5f) };
 }
 
 
