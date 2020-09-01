@@ -96,5 +96,5 @@ constexpr State3d State3d::operator/(const float& numb) {
 	return { s/numb, v/numb };
 }
 constexpr State3d State3d::operator+(const State3d& other) {
-	return { s +other.s, v +other.v };
+	return { s + other.s, v + other.v };
 }

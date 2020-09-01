@@ -1,8 +1,11 @@
 #pragma once
 
 #include "v3d.h"
-#include "olcPixelGameEngine.h"
 //Sphere
+
+namespace olc {
+	class Pixel;
+}
 
 class Sphere {
 public:
@@ -36,31 +39,20 @@ public:
 class MirroredSphere : public Sphere {
 public:
 	MirroredSphere(v3d center, float outerRadius) : Sphere(center, outerRadius) {}
-	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override{
-		rayDirection = rayDirection - 2 * dot(rayDirection, intersectionNormal) * intersectionNormal;
-		return false;
-	}
+	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 };
 
 class OpaqueSphere : public Sphere {
 public:
 	int32_t R, G, B;
 	OpaqueSphere(v3d center, float outerRadius, int32_t R, int32_t G, int32_t B) : Sphere(center, outerRadius), R(R), G(G), B(B) {}
-	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override{
-		float normalMultiplier = sqrt(abs(rayDirection.dot(intersectionNormal)));
-		pix = olc::Pixel(R*normalMultiplier, G*normalMultiplier, B*normalMultiplier);
-		return true;
-	}
+	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 };
 
 class CoolSphere : public Sphere {
 public:
 	CoolSphere(v3d center, float outerRadius) : Sphere(center, outerRadius) {}
-	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override{
-		v3d cool = cross(rayDirection, intersectionNormal) ;
-		pix = olc::Pixel(125 + 125*cool.x, 125 + 125*cool.y, 125 + 125*cool.z);
-		return true;
-	}
+	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 };
 
 class AtmoSphere : public Sphere {
@@ -68,9 +60,5 @@ public:
 	int32_t R, G, B;
 	int32_t atmosR, atmosG, atmosB;
 	AtmoSphere(v3d center, float outerRadius, int32_t R, int32_t G, int32_t B, int32_t atmosR, int32_t atmosG, int32_t atmosB) : Sphere(center, outerRadius), R(R), G(G), B(B), atmosR(atmosR), atmosG(atmosG), atmosB(atmosB) {}
-	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override{
-		float normalMultiplier = sqrt(abs(rayDirection.dot(intersectionNormal)));
-		pix = olc::Pixel(normalMultiplier*R + (1-normalMultiplier)*atmosR, normalMultiplier*G + (1-normalMultiplier)*atmosG, normalMultiplier*B + (1-normalMultiplier)*atmosB);
-		return true;
-	}
+	bool response(v3d& rayDirection, v3d& intersection, v3d& intersectionNormal, olc::Pixel& pix) override;
 };
