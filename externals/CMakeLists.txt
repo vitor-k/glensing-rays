@@ -10,3 +10,5 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
 # Glad
 add_subdirectory(glad)
 
+# glfw
+add_subdirectory(glfw)
