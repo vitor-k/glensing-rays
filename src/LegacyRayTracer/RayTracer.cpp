@@ -10,7 +10,7 @@
 
 #include "olcPixelGameEngine.h"
 
-#include "v3d.h"
+#include "common/v3d.h"
 #include "Sphere.h"
 #include "GravitationalEntity.h"
 

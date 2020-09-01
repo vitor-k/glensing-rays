@@ -1,7 +1,7 @@
 #pragma once
 #include "Sphere.h"
 #include "olcPixelGameEngine.h"
-#include "v3d.h"
+#include "common/v3d.h"
 #include<map>
 #include<set>
 #include<tuple>

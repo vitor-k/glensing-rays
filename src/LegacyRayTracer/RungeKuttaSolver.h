@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
 #include <functional>
-#include "v3d.h"
+#include "common/v3d.h"
 
 class GravitationalEntity;
 
