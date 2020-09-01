@@ -2,7 +2,7 @@
 #include "GravitationalEntity.h"
 
 template <typename T, class C>
-T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, T initial, C& caller, T(C::* f)(float, T)) {
+T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, const T& initial, const C& caller, T(C::* f)(const float&, const T&)) {
 	T current = initial;
 	T next = initial;
 	T k1, k2, k3, k4;
@@ -15,11 +15,6 @@ T RungeKuttaSolver::RungeKutta4Solver(const float& step, const int& nSteps, T in
 		k3 = step * (caller.*f)(t + step / 2, current + k2 / 2);
 		k4 = step * (caller.*f)(t + step, current + k3);
 		next = current + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-
-		next.v.normalize();
-
-		if ((next.s).norm() < 1.5) { return next; }
-		if ((next.s).norm() > caller.relativeOuterRadius) { return next; }
 
 		t += step;
 	}
