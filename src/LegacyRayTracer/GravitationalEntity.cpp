@@ -4,7 +4,8 @@
 
 GravitationalEntity::GravitationalEntity(v3d center, float mass, float radius) : Sphere(center, radius), M(mass),
                                          schwarzschildRadius(2.f * G * M / (c * c) ), photonSphere(1.5f*schwarzschildRadius),
-                                         relativeOuterRadius(outerRadius/schwarzschildRadius), relativePhotonSphere(photonSphere/schwarzschildRadius) {}
+                                         relativeOuterRadius(outerRadius/schwarzschildRadius), relativeOuterRadius2(relativeOuterRadius*relativeOuterRadius),
+										 relativePhotonSphere(photonSphere/schwarzschildRadius) {}
 
 
 State3d GravitationalEntity::statePonto(const float& t, const State3d& estado) const {

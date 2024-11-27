@@ -20,6 +20,7 @@ public:
 	const float photonSphere{ 0 };
 	const float relativePhotonSphere{ 0 };
 	const float relativeOuterRadius{ 0 };
+	const float relativeOuterRadius2{ 0 };
 
 	GravitationalEntity(v3d center, float mass, float radius);
 	State3d statePonto(const float& t, const State3d& estado) const;
